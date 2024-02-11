@@ -18,6 +18,13 @@ resource "aws_vpc" "default" {
   default = true
 }
 
+resource "aws_security_group" "blog" {
+  name = "blog"
+  description = "Allow http and https in. Allow everything out."
+
+  vpc_id = data.aws_vpc.default.id
+}
+
 resource "aws_instance" "blog" {
   ami           = data.aws_ami.app_ami.id
   instance_type = var.instance_type
