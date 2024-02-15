@@ -16,7 +16,7 @@ data "aws_ami" "app_ami" {
 
 module "asg" {
   source  = "terraform-aws-modules/autoscaling/aws"
-  name = "blog-asg"
+  name = "blog_asg"
 
   min_size                  = 1
   max_size                  = 2
@@ -62,13 +62,13 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "blog-"
+      name_prefix      = "blog_"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
       targets = {
         my_target = {
-          target_id = aws_instance.blog.id
+          target_id = module.blog_alb.target_group_arns
           port = 80
         }
       }
