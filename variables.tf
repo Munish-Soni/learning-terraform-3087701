@@ -6,10 +6,10 @@ variable "instance_type" {
 variable "ami_filter" {
   description = "Name filter and owner"
 
-  type = ({
-    name  = "string"
-    owner = "string"
-  })
+  type = (
+    name  = string
+    owner = string
+  )
 
   name  = "bitnami-tomcat-*-x86_64-hvm-ebs-nami"
   owner = "979382823631" # Bitnami
@@ -19,8 +19,8 @@ variable "environment" {
   description = "Development Environment"
 
   type = object ({
-    name   = "string"
-    prefix = "string"
+    name   = string
+    prefix = string
   })
 
   name   = "dev"
