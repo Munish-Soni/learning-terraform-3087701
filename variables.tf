@@ -3,25 +3,28 @@ variable "instance_type" {
   default     = "t3.nano"
 }
 
-variable "ami_filter" {
-  description = "Name filter and owner"
 
-  type = object ({
+variable "ami_filter" {
+  description = "AMI name and owner"
+
+  type = list(object({
     name  = string
     owner = string
-  })
+  }))
 
-  name  = "bitnami-tomcat-*-x86_64-hvm-ebs-nami"
-  owner = "979382823631" # Bitnami
+  default = [{
+      name  = "bitnami-tomcat-*-x86_64-hvm-ebs-nami"
+      owner = "979382823631"
+  }]
 }
 
 variable "environment" {
   description = "Development Environment"
 
-  type = object ({
+  type = list(object ({
     name   = string
-    prefix = string
-  })
+    network_prefix = string
+  }))
 
   name   = "dev"
   network_prefix = "10.0"
