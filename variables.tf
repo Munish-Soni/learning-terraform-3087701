@@ -7,8 +7,8 @@ variable "ami_filter" {
   description = "Name filter and owner"
 
   type = ({
-    name  = string
-    owner = string
+    name  = "string"
+    owner = "string"
   })
 
   name  = "bitnami-tomcat-*-x86_64-hvm-ebs-nami"
@@ -19,14 +19,12 @@ variable "environment" {
   description = "Development Environment"
 
   type = object ({
-    name   = string
-    prefix = string
+    name   = "string"
+    prefix = "string"
   })
 
-  default = {
-    name   = "dev"
-    network_prefix = "10.0"
-  }
+  name   = "dev"
+  network_prefix = "10.0"
 }
 
 variable "asg_min_size" {
