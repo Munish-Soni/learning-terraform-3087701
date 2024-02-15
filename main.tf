@@ -48,7 +48,7 @@ module "blog_vpc" {
   }
 }
 
-module "alb" "blog_alb" {
+module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 6.0"
 
