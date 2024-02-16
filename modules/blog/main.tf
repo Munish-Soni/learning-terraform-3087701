@@ -14,21 +14,6 @@ data "aws_ami" "app_ami" {
   owners = [var.ami_filter.owner] # Bitnami
 }
 
-module "asg" {
-  source  = "terraform-aws-modules/autoscaling/aws"
-  name = "${var.environment.name}-blog_asg"
-
-  min_size                  = var.asg_min_size
-  max_size                  = var.asg_max_size
-
-  vpc_zone_identifier       = module.blog_vpc.public_subnets
-  target_group_arns         = module.blog-alb.target_group_arns
-  security_groups           = [module.blog_sg.security_group_id]
-
-  image_id                  = data.aws_ami.app_ami.id
-  instance_type             = var.instance_type
-}
-
 data "aws_vpc" "default" {
   default = true
 }
@@ -48,10 +33,26 @@ module "blog_vpc" {
   }
 }
 
-module "blog-alb" {
-  source  = "terraform-aws-modules/alb/aws"
+module "asg" {
+  source  = "terraform-aws-modules/autoscaling/aws"
+  name = "${var.environment.name}-blog_asg"
 
-  name = "${var.environment.name}-blog-alb"
+  min_size                  = var.asg_min_size
+  max_size                  = var.asg_max_size
+
+  vpc_zone_identifier       = module.blog_vpc.public_subnets
+  target_group_arns         = module.blog_alb.target_group_arns
+  security_groups           = [module.blog_sg.security_group_id]
+
+  image_id                  = data.aws_ami.app_ami.id
+  instance_type             = var.instance_type
+}
+
+module "blog_alb" {
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~> 6.0"
+
+  name = "blog-alb"
 
   load_balancer_type = "application"
 
@@ -61,23 +62,23 @@ module "blog-alb" {
 
   target_groups = [
     {
-    name_prefix      = "${var.environment.name}-"
+      name_prefix      = "blog-"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
     }
   ]
 
-#  http_tcp_listeners = [
-#    {
-#      port               = 80
-#      protocol           = "HTTP"
-#      target_group_index = 0
-#    }
-#  ]
+  http_tcp_listeners = [
+    {
+      port               = 80
+      protocol           = "HTTP"
+      target_group_index = 0
+    }
+  ]
 
   tags = {
-    Environment = var.environment.name
+    Environment = "dev"
   }
 }
 
